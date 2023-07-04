@@ -19,171 +19,190 @@ This document specification is under GNU-FDL License. See credits at the end
 of this document.
 
 
+Basic markup
+============
+
+The styling markups are the following:
+
+* The ````verbatim```` that becomes ``verbatim``
+* The ``^^strong^^`` that becomes ^^strong^^
+* The ``^emphasis^`` that becomes ^emphasis^
+
+Headings and Titles
+===================
+
+They are used to write section titles and delimitate the bigger parts of your
+text:
+
+    =============
+    Title Level 1
+    =============
+
+    Title Level 2
+    =============
+
+    Title Level 3
+    -------------
+
+    Title Level 4
+    ~~~~~~~~~~~~~
+
+Lists
+=====
+
+Lists are written prepending ``*`` or ``-`` for unordered lists
+and ``1.`` or ``a.`` or ``A.`` for ordered lists. Sublists can be created
+simply adding a two space indentation. Blank lines can also be added between
+items.
+
+  * First of unordered list
+  * Second of unordered list
+    1. First of ordered sub list
+
+    2. Second of ordered sub list
+      - First of unordered sub sub list
+      - Second of unordered sub sub list
+
+Preformated Text
+================
+
+Just indent with 4 spaces more than the previous indentation. All subsequent
+lines with at least the same indentation will become part of the same
+preformated block until it find a smaller indentation.
+
+Code Blocks
+===========
+
+They act exactly like preformated text, but give hints about how external
+parsers can process its content syntax.
+
+    :: code :: Lua
+        function sum(a,b)
+          return a+b
+        end
+
+
+Code Signature
+==============
+
+Used to create very smaller section headings on the text with preformated text
+in a single line. Convenient to create source code documentation about
+functions that can be called or represented in many different ways.
+
+    ## string.sub ## lua
+      string.sub( str @string, start @number, end @number ) @string
+      @string:sub(start @number, end @number) @string
+
+    ## myDatatype ## c
+      typedef struct {
+        int x;
+        char **str;
+      } myDatatype;
+
+In the example above, two entries will be created at the document index, one for
+``string.sub`` and other for ``myDataType``.
+
+
+Links
+=====
+
+The linking markups are between ``<<`` and ``>>``. The type of link is defined
+immediately after the angle braces and can or not be followed by a token or
+complementing value inside single backticks `````.
+before and after it.
+
+* The ``<<word>>`` links to the anchor heading in the document.
+* The ``<<word>>@`http://somewhere.com``` make ``word`` point to an address
+outside the document.
+* The ``<<<word>>>`` (triple chevrons) points to another document, as in wikis.
+
+The internal reference is made on each heading or <<signature header>>
+by tokenization (replacing any ASCII non alphanumerical character by space,
+trimming and removing duplicate spaces that are replaced by a single ``-``.
+Non ASCII characters are preserved).
+
+Footnotes
+=========
+
+Footnotes are marked by a single asterisk (see <<Choices>>) right after a word
+or styling marker:
+
+    This is a footnote*, and this also is ^other footnote^*.
+    This is a footnote*`foo` with a name.
+    This is a numbered footnote*1.
+
+    ** This explains the first footnote.
+    ** This explains the second footnote.
+    ** `foo` This explains a named footnote.
+    ** 1 This explains a numbered footnote.
+
+Glossaries
+==========
+
+Glossary references are marked with a hash ``#`` immediattely the word or
+expression. To group different words reffering to the same concept, it
+can be followed by the target glossary reference between backticks:
+
+    There are many planets# in our Universe. All planets seen nearer of its
+    star can seen as it if had moon phases, even a waxing#`crescent` one.
+
+    # `planets` are near spherical objects that not shine like stars and are
+    bigger than our moon.
+    # `crescent` or waxing is the appearance of a celestial spheric body when
+    its brighter hemisphere becomes more apparent.
+
+Glossary can have no explicative notes and be referenced multiple ways to just
+create indexes of where in the document such words were used.
+
+Image (draft)
+=============
+
+Images are a distinct block where you can put its address with some metadata
+if you want to.
+
+    :: image :: Your short description
+      src    = https://xxx.yyyy/x.img
+      width  =
+      height =
+      author =
+      year   =
+      copyright =
+
+Breaks
+======
+
+Breaks can be used to disambiguate on list or block ending. It consists in just
+adding new line with only four carets ``^^^^`` positionated at the desired
+block level. This shouldn't be used as decorative separation lines.
+
+
 Blocks
 ======
 
 A block is formed by contiguous non-empty lines.
-A simple blank line is sufficient to separate two blocks and more than two
-blank lines should not be consideres.
+A simple blank line is sufficient to separate two blocks. If more blank lines
+are found they are discared.
 
 The only block not ruled by this is the preformated block.
 
+Custom blocks can also incorporate subsequent blocks with wider indentation,
+but this logic is not applied to ordered or unordered lists where each item
+is considered a distinct block.
 
-Titles and Headings
--------------------
+Other block types:
 
-There are 4 heading levels allowed. They follow an aestethically order to
-represent the document structure level.
+Quotation (draft)
 
-They can be decorated before and after or only after the heading text.
-The precedence order of decoration:
+    :: quote ::
+      Se essa rua fosse minha
+      eu mandava ela calar
 
-1. Overline and underline with ``=``
-
-  :: pre ::
-
-    =========
-    Heading A
-    =========
-
-2. Underline with ``=``
-
-  :: pre ::
-
-    Heading B
-    =========
-
-3. Underline with ``-`` (minus sign)
-
-  :: pre ::
-
-    Heading C
-    ---------
-
-4. Underline with ``~`` (tilde)
-
-  :: pre ::
-
-    Heading C
-    ~~~~~~~~~
-
-
-
-Unordered lists
----------------
-
-An unordered list is simply started in the leftmost of the line after an empty
-line, followed by ``*``, or a ``-``, then a space, and finally the desired
-content.
-
-The list ends when beginning another block at the same column, other than an
-unordered list.
-
-It can have nested content, like other lists or paragraphs. The indentation is
-made with two spaces.
-
-
-
-Ordered lists
--------------
-
-Follow the same principles of unordered lists, but considering different
-beginning tokens:
-
-
-* Numbers: lines started by a number followed by a dot, example:
-
-  :: pre ::
-
-    1. First item
-
-    2. Second item
-
-    3. And so on
-
-* Letters: lines started by a letter followed by a dot, example:
-
-  :: pre ::
-
-    A. First item
-
-    B. Second item
-
-    C. Third item
-
-  No matter mixing numbers and letters, they will be considered all part
-  of the same ordered list:
-
-  :: pre ::
-
-    A. First item
-
-    1. Second item
-
-    1000. Third item
-
-The resulting document representation just makes difference between nesting
-levels by indentation and list type (ordered/unordered)
-
-
-Code block
-----------
-
-:: pre ::
-
-  :: source :: lua
-
-    local function x() end
-
-
-
-Signature header
-----------------
-
-:: pre ::
-
-  ## string.format ## lua
-
-    string.format( fmt @string, data @string, ...) @string
-    String:format( data @string, ... ) @string
-
-
-:: pre ::
-
-  ## myDatatype ## c
-
-    typedef struct {
-      int x;
-      char **str;
-    } myDatatype;
-
-
-Like a heading for code documentations, allowing to express multiple function
-signatures, classes, variables or structures.
-
-
-Quotation
----------
-
-(draft)
-
-:: quote ::
-
-  Se essa rua fosse minha
-  eu mandava ela calar
-
-  A bagunça da vizinha
-  eu não sei se tem pra lá
-
-  :: Attribution that can span
-  to the immediate line.
-
+      A bagunça da vizinha
+      eu não sei se tem pra lá
 
 
 Tables (draft)
 --------------
-
-:: pre ::
 
   :: table :: `My table title`
 
@@ -197,125 +216,21 @@ Tables (draft)
       # B line 2
       # C line 3
 
-:: pre ::
+Bibliography (draft)
+--------------------
 
-  :: vtable ::
+    :: bib :: JUNG-MDT
+      name  = Carl Gustav Jung
+      title = Memory, dreams and thoughts.
+      year  = 1968
+      page  = 250
 
-    #|
-    || Column A | Column B | Column C \
-    || A line 1 | B line 1 | C line 1 \
-    || A line 2 | B line 2 | C line 2 \
-    || A line 3 | B line 3 | C line 3 \
-    |#
+    :: bib :: FRANZ-SH
 
-
-Bibliography
-------------
-
-(draft)
-
-:: pre ::
-
-  :: bib :: JUNG-MDT
-
-    name  : Carl Gustav Jung
-    title : Memory, dreams and thoughts.
-    year  : 1968
-    page  : 250
-
-  :: bib :: FRANZ-SH
-
-    name : Marie-Louise von Franz
-    title : Shadow in Fairy tales
-    year : 1960
-    page : 120
-
-
-Inline markup
--------------
-
-The styling markups are the following:
-
-* The ````verbatim```` that becomes ``verbatim``
-* The ``^^strong^^`` that becomes ^^strong^^
-* The ``^emphasis^`` that becomes ^emphasis^
-
-Footnotes
----------
-
-Footnotes are marked by a single asterisk (see <<Choices>>) right after a word
-or styling marker:
-
-:: pre ::
-  This is a footnote*, and this also is ^other footnote^*.
-  This is a footnote*`foo` with a name.
-  This is a numbered footnote*1.
-
-  ** This explains the first footnote.
-  ** This explains the second footnote.
-  ** `foo` This explains a named footnote.
-  ** 1 This explains a numbered footnote.
-
-Glossary
---------
-
-Glossary references are marked with a hash ``#`` immediattely the word or
-expression. To group different words reffering to the same concept, it
-can be followed by the target glossary reference between backticks:
-
-:: pre ::
-  There are many planets# in our Universe. All planets seen nearer of its
-  star can seen as it if had moon phases, even a waxing#`crescent` one.
-
-  # `planets` are near spherical objects that not shine like stars and are
-  bigger than our moon.
-  # `crescent` or waxing is the appearance of a celestial spheric body when its
-  brighter hemisphere becomes more apparent.
-
-Even in the absense of an explicative note it can be used to build a word index
-and can be used multiple times as a way to create a reference index.
-
-The linking markups are between ``<<`` and ``>>``. The type of link is defined
-immediately after the angle braces and can or not be followed by a token or
-complementing value inside single backticks `````.
-before and after it.
-
-Links
------
-
-Links can be external or external.
-
-* The ``<<word>>`` links to the anchor heading in the document.
-* The ``<<word>>@`http://somewhere.com``` make ``word`` point to an address
-outside the document.
-* The ``<<<word>>>`` points to another document, as in wikis.
-
-The internal reference is made on each heading or <<signature header>>
-by tokenization (replacing any ASCII non alphanumerical character by space,
-trimming and removing duplicate spaces that are replaced by a single ``-``.
-Non ASCII characters are preserved).
-
-:: pre ::
-
-  =====
-  Title
-  =====
-
-  `my-title`
-
-
-And in the content body link to it like:
-
-
-```
-This is a link to the <<beginning>>`my-title`
-
-or
-
-This is a link to the <<title>>!`
-```
-
-
+      name  = Marie-Louise von Franz
+      title = Shadow in Fairy tales
+      year  = 1960
+      page  = 120
 
 Specifications
 ==============
@@ -329,29 +244,22 @@ than the found in ASCII, when using them after an inline markup ending, it
 should be preceded by an escaped whitespace.
 
 
-
 Parsing order
 -------------
 
 1. First the text will be split in blocks, that are delimited by a empty lines.
-A single empty line is sufficient for that and the immediately following empty
-lines are discarded.
+  A single empty line is sufficient for that and the immediately following empty
+  lines are discarded.
 
 2. Detect the type of each block and it to the list of blocks with the type
-information.
+  information.
 
 3. Accordingly to the block type, call the block type parser.
-
 4. Do inline parsing that should parse the block content, when applicable.
-
 5. The default inline parsing should follow this order:
-
   a. verbatim
-
   b. links
-
   c. strong
-
   d. emphasis
 
 
@@ -369,19 +277,14 @@ Inline escaping
   verbatim chunk, it will be kept as is.
 
 
-
 Inline markup boundaries
 ------------------------
 
 The start delimiter in inline markup is valid when:
 
 - It is at the start of a line;
-
 - It is anteceded by a space character;
-
 - It is anteceded by one of the ASCII charaters:
-
-  :: pre ::
 
     ' " ( { [
 
@@ -389,10 +292,7 @@ The start delimiter in inline markup is valid when:
 The end delimiter in inline markup is valid when:
 
 - It is followed by a space;
-
 - It is followed by one of the ASCII characters:
-
-  :: pre ::
 
     ' " ) } ] , . : ; ! ?
 
@@ -401,12 +301,10 @@ Verbatim parsing
 ----------------
 
 - Verbatim starts with a pair of backticks `````` preceded by any valid start
-delimiter.
-
+  delimiter.
 - Cannot be nested. Its contents are not escaped.
-
 - It only ends when a pair of backticks are found followed by a boundary ending
-as defined on <<Inline markup boundaries>>.
+  as defined on <<Inline markup boundaries>>.
 
 
 Link parsing
