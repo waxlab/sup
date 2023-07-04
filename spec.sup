@@ -1,0 +1,468 @@
+====================================================================
+Sup - The ^Super Unambiguous Unobstrusive Understandable Plain Text^
+====================================================================
+
+
+Objective
+=========
+
+Provide an unambiguous and extensible file format with an intuitive markup
+that allows the same file to be easily read as plain text or be parsed
+and converted in books etc.
+
+
+The Sup markup consists in the minimum amount of symbols while being the most
+unambiguous as possible. It is parsed to a list of blocks of content, and each
+block of content is parsed to a list of markup pieces.
+
+This document specification is under GNU-FDL License. See credits at the end
+of this document.
+
+
+Blocks
+======
+
+A block is formed by contiguous non-empty lines.
+A simple blank line is sufficient to separate two blocks and more than two
+blank lines should not be consideres.
+
+The only block not ruled by this is the preformated block.
+
+
+Titles and Headings
+-------------------
+
+There are 4 heading levels allowed. They follow an aestethically order to
+represent the document structure level.
+
+They can be decorated before and after or only after the heading text.
+The precedence order of decoration:
+
+1. Overline and underline with ``=``
+
+  :: pre ::
+
+    =========
+    Heading A
+    =========
+
+2. Underline with ``=``
+
+  :: pre ::
+
+    Heading B
+    =========
+
+3. Underline with ``-`` (minus sign)
+
+  :: pre ::
+
+    Heading C
+    ---------
+
+4. Underline with ``~`` (tilde)
+
+  :: pre ::
+
+    Heading C
+    ~~~~~~~~~
+
+
+
+Unordered lists
+---------------
+
+An unordered list is simply started in the leftmost of the line after an empty
+line, followed by ``*``, or a ``-``, then a space, and finally the desired
+content.
+
+The list ends when beginning another block at the same column, other than an
+unordered list.
+
+It can have nested content, like other lists or paragraphs. The indentation is
+made with two spaces.
+
+
+
+Ordered lists
+-------------
+
+Follow the same principles of unordered lists, but considering different
+beginning tokens:
+
+
+* Numbers: lines started by a number followed by a dot, example:
+
+  :: pre ::
+
+    1. First item
+
+    2. Second item
+
+    3. And so on
+
+* Letters: lines started by a letter followed by a dot, example:
+
+  :: pre ::
+
+    A. First item
+
+    B. Second item
+
+    C. Third item
+
+  No matter mixing numbers and letters, they will be considered all part
+  of the same ordered list:
+
+  :: pre ::
+
+    A. First item
+
+    1. Second item
+
+    1000. Third item
+
+The resulting document representation just makes difference between nesting
+levels by indentation and list type (ordered/unordered)
+
+
+Code block
+----------
+
+:: pre ::
+
+  :: source :: lua
+
+    local function x() end
+
+
+
+Signature header
+----------------
+
+:: pre ::
+
+  ## string.format ## lua
+
+    string.format( fmt @string, data @string, ...) @string
+    String:format( data @string, ... ) @string
+
+
+:: pre ::
+
+  ## myDatatype ## c
+
+    typedef struct {
+      int x;
+      char **str;
+    } myDatatype;
+
+
+Like a heading for code documentations, allowing to express multiple function
+signatures, classes, variables or structures.
+
+
+Quotation
+---------
+
+(draft)
+
+:: quote ::
+
+  Se essa rua fosse minha
+  eu mandava ela calar
+
+  A bagunça da vizinha
+  eu não sei se tem pra lá
+
+  :: Attribution that can span
+  to the immediate line.
+
+
+
+Tables (draft)
+--------------
+
+:: pre ::
+
+  :: table :: `My table title`
+
+    # Column A
+      # A line 1
+      # A line 2
+      # A line 3
+
+    # Column B
+      # B line 1
+      # B line 2
+      # C line 3
+
+:: pre ::
+
+  :: vtable ::
+
+    #|
+    || Column A | Column B | Column C \
+    || A line 1 | B line 1 | C line 1 \
+    || A line 2 | B line 2 | C line 2 \
+    || A line 3 | B line 3 | C line 3 \
+    |#
+
+
+Bibliography
+------------
+
+(draft)
+
+:: pre ::
+
+  :: bib :: JUNG-MDT
+
+    name  : Carl Gustav Jung
+    title : Memory, dreams and thoughts.
+    year  : 1968
+    page  : 250
+
+  :: bib :: FRANZ-SH
+
+    name : Marie-Louise von Franz
+    title : Shadow in Fairy tales
+    year : 1960
+    page : 120
+
+
+Inline markup
+-------------
+
+The styling markups are the following:
+
+* The ````verbatim```` that becomes ``verbatim``
+* The ``^^strong^^`` that becomes ^^strong^^
+* The ``^emphasis^`` that becomes ^emphasis^
+
+Footnotes
+---------
+
+Footnotes are marked by a single asterisk (see <<Choices>>) right after a word
+or styling marker:
+
+:: pre ::
+  This is a footnote*, and this also is ^other footnote^*.
+  This is a footnote*`foo` with a name.
+  This is a numbered footnote*1.
+
+  ** This explains the first footnote.
+  ** This explains the second footnote.
+  ** `foo` This explains a named footnote.
+  ** 1 This explains a numbered footnote.
+
+Glossary
+--------
+
+Glossary references are marked with a hash ``#`` immediattely the word or
+expression. To group different words reffering to the same concept, it
+can be followed by the target glossary reference between backticks:
+
+:: pre ::
+  There are many planets# in our Universe. All planets seen nearer of its
+  star can seen as it if had moon phases, even a waxing#`crescent` one.
+
+  # `planets` are near spherical objects that not shine like stars and are
+  bigger than our moon.
+  # `crescent` or waxing is the appearance of a celestial spheric body when its
+  brighter hemisphere becomes more apparent.
+
+Even in the absense of an explicative note it can be used to build a word index
+and can be used multiple times as a way to create a reference index.
+
+The linking markups are between ``<<`` and ``>>``. The type of link is defined
+immediately after the angle braces and can or not be followed by a token or
+complementing value inside single backticks `````.
+before and after it.
+
+Links
+-----
+
+Links can be external or external.
+
+* The ``<<word>>`` links to the anchor heading in the document.
+* The ``<<word>>@`http://somewhere.com``` make ``word`` point to an address
+outside the document.
+* The ``<<<word>>>`` points to another document, as in wikis.
+
+The internal reference is made on each heading or <<signature header>>
+by tokenization (replacing any ASCII non alphanumerical character by space,
+trimming and removing duplicate spaces that are replaced by a single ``-``.
+Non ASCII characters are preserved).
+
+:: pre ::
+
+  =====
+  Title
+  =====
+
+  `my-title`
+
+
+And in the content body link to it like:
+
+
+```
+This is a link to the <<beginning>>`my-title`
+
+or
+
+This is a link to the <<title>>!`
+```
+
+
+
+Specifications
+==============
+
+ASCII delimiter
+---------------
+
+^Sup^ consider only ASCII printable characters in its parsing.
+So a file can be written using UTF-8; As UTF-8 contains punctuation marks other
+than the found in ASCII, when using them after an inline markup ending, it
+should be preceded by an escaped whitespace.
+
+
+
+Parsing order
+-------------
+
+1. First the text will be split in blocks, that are delimited by a empty lines.
+A single empty line is sufficient for that and the immediately following empty
+lines are discarded.
+
+2. Detect the type of each block and it to the list of blocks with the type
+information.
+
+3. Accordingly to the block type, call the block type parser.
+
+4. Do inline parsing that should parse the block content, when applicable.
+
+5. The default inline parsing should follow this order:
+
+  a. verbatim
+
+  b. links
+
+  c. strong
+
+  d. emphasis
+
+
+
+Inline escaping
+---------------
+
+- A backslash before any character make it has no special meaning for parsing.
+
+- Escaped whitespace is a space character preceeded by a backslash. It allows
+  to force closing inline markups when inside a word. At the end of document
+  parsing these escaped spaces are completely removed.
+
+- Inline verbatim disable any escaping, so if a backslash is found inside the
+  verbatim chunk, it will be kept as is.
+
+
+
+Inline markup boundaries
+------------------------
+
+The start delimiter in inline markup is valid when:
+
+- It is at the start of a line;
+
+- It is anteceded by a space character;
+
+- It is anteceded by one of the ASCII charaters:
+
+  :: pre ::
+
+    ' " ( { [
+
+
+The end delimiter in inline markup is valid when:
+
+- It is followed by a space;
+
+- It is followed by one of the ASCII characters:
+
+  :: pre ::
+
+    ' " ) } ] , . : ; ! ?
+
+
+Verbatim parsing
+----------------
+
+- Verbatim starts with a pair of backticks `````` preceded by any valid start
+delimiter.
+
+- Cannot be nested. Its contents are not escaped.
+
+- It only ends when a pair of backticks are found followed by a boundary ending
+as defined on <<Inline markup boundaries>>.
+
+
+Link parsing
+------------
+
+It has a pair of left angle brackets `<<` followed by words and finalized by
+another pair of right angle brackets `>>`.
+
+To diferentiate between the kinds of link, a modifier is added immediately after
+the right angle bracket. These modifiers are:
+
+- The at sign ``@`` for URLs;
+- The asterisk ``*``` for footnotes;
+- The hash ``#`` for glossary/vocabulary;
+- (draft) The double asterisk ``**`` for bibliographical references;
+
+After the modifier, a single parameter can be passed to the link. This parameter
+should be written between single backticks and shouldn't be parsed for more
+markup.
+
+- For URLs, the parameter is the target (email, site etc.);
+
+- For footnotes, the parameter use an explicit numbering (instead of the
+positional) or an explicit name.
+
+- For glossary, the parameter can be used to link a word variant to another in
+the glossary.
+
+- (draft) For bibliographical reference, it should point to the token pointing
+to the right bibliographical description.
+
+Choices
+=======
+
+* Links: angle brackets (chevrons) in literature are most commonly used to
+quote someone, say something in foreign language or insert asides. Just because
+this is the main usage in literature, but is rarely used (giving place to
+parenthesis or quotation marks) it is well suited to represent in plain text
+what should be found elsewhere in document or outside it.
+
+* Asterisks: the main usage of asterisks or stars (or daggers) in printed text
+is to mark a place in text where there is an anotation or further information.
+Use them for emphasis or strong markup looks strange and distractful to a
+reader.
+
+* Carets: as the names says it resembles the original marks added in
+"proofreading and typography to indicate that additional material needs to
+be inserted at the point indicated in the text"*. As in digital writing it is
+rarely used outside technical usage (except in programming or mathematical
+representation) it is the perfect sign to indicate where a text is an emphasis
+or a strong emphasis.
+
+** https://en.wikipedia.org/wiki/Caret_(proofreading)
+
+Credits
+=======
+
+This document is under GNU-FDL license.
+Copyright (c) 2023 - Thadeu A. C. de Paula
